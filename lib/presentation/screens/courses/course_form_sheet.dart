@@ -69,6 +69,15 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.elevatedSurface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(
+            top: BorderSide(color: AppColors.border),
+            left: BorderSide(color: AppColors.border),
+            right: BorderSide(color: AppColors.border),
+          ),
+        ),
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,

@@ -220,6 +220,15 @@ class _TaskFormSheetState extends ConsumerState<TaskFormSheet> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.88,
         ),
+        decoration: const BoxDecoration(
+          color: AppColors.elevatedSurface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(
+            top: BorderSide(color: AppColors.border),
+            left: BorderSide(color: AppColors.border),
+            right: BorderSide(color: AppColors.border),
+          ),
+        ),
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
