@@ -45,7 +45,7 @@ class _MainLayoutState extends State<MainLayout> {
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           backgroundColor: AppColors.surface,
-          indicatorColor: AppColors.primary.withOpacity(0.2),
+          indicatorColor: AppColors.primary.withValues(alpha: 0.2),
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return const TextStyle(color: AppColors.primaryLight, fontSize: 12, fontWeight: FontWeight.bold);

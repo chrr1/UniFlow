@@ -48,7 +48,6 @@ class DashboardScreen extends ConsumerWidget {
             if (activeTasks.isNotEmpty) {
               final sorted = List<TaskItem>.from(activeTasks);
               sorted.sort((a, b) {
-                // High priority first
                 final priorityRank = {TaskPriority.high: 0, TaskPriority.medium: 1, TaskPriority.low: 2};
                 final pA = priorityRank[a.priority]!;
                 final pB = priorityRank[b.priority]!;

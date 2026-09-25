@@ -16,40 +16,39 @@ class PriorityBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     Color color;
     String label;
-    String dotEmoji;
 
     switch (priority) {
       case TaskPriority.high:
         color = AppColors.highPriority;
-        label = 'HIGH';
-        dotEmoji = '🔴';
+        label = 'High';
         break;
       case TaskPriority.medium:
         color = AppColors.mediumPriority;
-        label = 'MEDIUM';
-        dotEmoji = '🟡';
+        label = 'Medium';
         break;
       case TaskPriority.low:
       default:
         color = AppColors.lowPriority;
-        label = 'LOW';
-        dotEmoji = '⚪';
+        label = 'Low';
         break;
     }
 
     if (isCompact) {
-      return Text(
-        dotEmoji,
-        style: const TextStyle(fontSize: 12),
+      return Container(
+        width: 7,
+        height: 7,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
       );
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -68,8 +67,8 @@ class PriorityBadge extends StatelessWidget {
             style: TextStyle(
               color: color,
               fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],

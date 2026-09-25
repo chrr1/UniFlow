@@ -15,7 +15,7 @@ class AppColors {
   static const Color textSecondary = Color(0xFF9AA1AC);
   static const Color textMuted = Color(0xFF6B7280);
 
-  // Brand Accent (Indigo/Violet tint for sleek dark look)
+  // Brand Accent
   static const Color primary = Color(0xFF6366F1);
   static const Color primaryDark = Color(0xFF4F46E5);
   static const Color primaryLight = Color(0xFF818CF8);
