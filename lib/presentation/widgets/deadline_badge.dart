@@ -20,7 +20,7 @@ class DeadlineBadge extends StatelessWidget {
     final text = DateFormatter.formatDeadline(deadline, isCompleted: isCompleted);
 
     Color color;
-    IconData icon = Icons.calendar_today_rounded;
+    IconData icon = Icons.schedule_rounded;
 
     switch (state) {
       case DeadlineState.overdue:
@@ -46,11 +46,10 @@ class DeadlineBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.25), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

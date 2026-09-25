@@ -42,7 +42,7 @@ class TaskCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Course name + Priority
+                // Header: Course Tag + Priority Badge
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -60,6 +60,7 @@ class TaskCard extends StatelessWidget {
                               color: AppColors.primaryLight,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
+                              letterSpacing: 0.2,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -82,7 +83,8 @@ class TaskCard extends StatelessWidget {
                           onToggleCompleted!(!isCompleted);
                         }
                       },
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
                         margin: const EdgeInsets.only(top: 2, right: 10),
                         width: 20,
                         height: 20,
@@ -95,7 +97,7 @@ class TaskCard extends StatelessWidget {
                           ),
                         ),
                         child: isCompleted
-                            ? const Icon(Icons.check, size: 14, color: Colors.white)
+                            ? const Icon(Icons.check, size: 13, color: Colors.white)
                             : null,
                       ),
                     ),
@@ -106,6 +108,7 @@ class TaskCard extends StatelessWidget {
                           color: isCompleted ? AppColors.textMuted : AppColors.textPrimary,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
+                          height: 1.3,
                           decoration: isCompleted ? TextDecoration.lineThrough : null,
                         ),
                       ),
