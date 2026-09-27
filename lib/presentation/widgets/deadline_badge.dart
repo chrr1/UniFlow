@@ -25,7 +25,7 @@ class DeadlineBadge extends StatelessWidget {
     switch (state) {
       case DeadlineState.overdue:
         color = AppColors.overdue;
-        icon = Icons.warning_amber_rounded;
+        icon = Icons.error_outline_rounded;
         break;
       case DeadlineState.dueToday:
         color = AppColors.dueToday;
@@ -37,7 +37,7 @@ class DeadlineBadge extends StatelessWidget {
         break;
       case DeadlineState.completed:
         color = AppColors.statusCompleted;
-        icon = Icons.event_note_rounded;
+        icon = Icons.check_circle_outline_rounded;
         break;
       case DeadlineState.upcoming:
       default:
@@ -45,27 +45,21 @@ class DeadlineBadge extends StatelessWidget {
         break;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
+    // Seamless deadline text without background box
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 13, color: color),
+        const SizedBox(width: 5),
+        Text(
+          text,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -16,27 +16,31 @@ class PriorityBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     Color color;
     String label;
+    int barCount;
 
     switch (priority) {
       case TaskPriority.high:
         color = AppColors.highPriority;
         label = 'High';
+        barCount = 3;
         break;
       case TaskPriority.medium:
         color = AppColors.mediumPriority;
-        label = 'Medium';
+        label = 'Med';
+        barCount = 2;
         break;
       case TaskPriority.low:
       default:
         color = AppColors.lowPriority;
         label = 'Low';
+        barCount = 1;
         break;
     }
 
     if (isCompact) {
       return Container(
-        width: 7,
-        height: 7,
+        width: 6,
+        height: 6,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -44,35 +48,35 @@ class PriorityBadge extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+    // Seamless Signal Bars without background box
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: List.generate(3, (index) {
+            final isActive = index < barCount;
+            return Container(
+              margin: const EdgeInsets.only(right: 2),
+              width: 3,
+              height: (index + 1) * 3.5 + 2,
+              decoration: BoxDecoration(
+                color: isActive ? color : AppColors.textMuted.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(1),
+              ),
+            );
+          }),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
           ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

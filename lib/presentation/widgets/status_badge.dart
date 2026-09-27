@@ -18,7 +18,7 @@ class StatusBadge extends StatelessWidget {
     switch (status) {
       case TaskStatus.completed:
         color = AppColors.statusCompleted;
-        icon = Icons.check_circle_rounded;
+        icon = Icons.check_circle_outline_rounded;
         break;
       case TaskStatus.inProgress:
         color = AppColors.statusInProgress;
@@ -31,27 +31,21 @@ class StatusBadge extends StatelessWidget {
         break;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 11, color: color),
-          const SizedBox(width: 4),
-          Text(
-            status.label,
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
+    // Seamless status text without background box
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 12, color: color),
+        const SizedBox(width: 4),
+        Text(
+          status.label,
+          style: TextStyle(
+            color: color,
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
