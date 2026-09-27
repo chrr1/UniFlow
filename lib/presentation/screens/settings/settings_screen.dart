@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../providers/course_provider.dart';
 import '../../../providers/task_provider.dart';
 
@@ -38,6 +39,28 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  void _sendTestNotification(BuildContext context) async {
+    final granted = await NotificationService().requestPermissions();
+    if (!granted && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Notification permissions not granted.')),
+      );
+      return;
+    }
+
+    await NotificationService().showInstantNotification(
+      id: 999,
+      title: '⏰ Test Notifikasi UniTask',
+      body: 'Pengingat deadline tugas universitas Anda aktif!',
+    );
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Test notification sent! Check your device system tray.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final coursesAsync = ref.watch(coursesProvider);
@@ -55,6 +78,44 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          // Section: Notifications (V2 Feature)
+          const Text(
+            'NOTIFICATIONS (V2)',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Column(
+              children: [
+                const ListTile(
+                  leading: Icon(Icons.notifications_active_rounded, color: AppColors.primaryLight),
+                  title: Text('Deadline Reminders', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+                  subtitle: Text('Automatic reminders 1 day before & on deadline day', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  trailing: Icon(Icons.check_circle_rounded, color: AppColors.statusCompleted, size: 20),
+                ),
+                const Divider(color: AppColors.borderSubtle, height: 1),
+                ListTile(
+                  leading: const Icon(Icons.touch_app_rounded, color: AppColors.statusInProgress),
+                  title: const Text('Send Test Notification', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+                  subtitle: const Text('Test local notifications on your device', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+                  onTap: () => _sendTestNotification(context),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // Section: Appearance
           const Text(
             'APPEARANCE',
@@ -143,7 +204,7 @@ class SettingsScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  'UniTask v1.0 (MVP)',
+                  'UniTask v2.0 (Productivity)',
                   style: TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4),

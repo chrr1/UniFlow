@@ -3,6 +3,7 @@ import '../data/database/db_helper.dart';
 import '../data/models/task_model.dart';
 import '../data/models/subtask_model.dart';
 import '../core/utils/date_formatter.dart';
+import '../core/services/notification_service.dart';
 import 'course_provider.dart';
 
 enum TaskFilter { all, today, upcoming, overdue, completed }
@@ -28,6 +29,13 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
     try {
       final tasks = await DbHelper.instance.getTasks();
       state = AsyncValue.data(tasks);
+
+      // Refresh notification schedules
+      for (var t in tasks) {
+        if (t.status != TaskStatus.completed && t.deadline != null) {
+          NotificationService().scheduleTaskReminder(t);
+        }
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -35,17 +43,26 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
 
   Future<void> addTask(TaskItem task) async {
     await DbHelper.instance.insertTask(task);
+    if (task.deadline != null) {
+      await NotificationService().scheduleTaskReminder(task);
+    }
     await loadTasks();
     ref.read(coursesProvider.notifier).loadCourses();
   }
 
   Future<void> updateTask(TaskItem task) async {
     await DbHelper.instance.updateTask(task);
+    if (task.status == TaskStatus.completed) {
+      await NotificationService().cancelTaskReminder(task.id);
+    } else if (task.deadline != null) {
+      await NotificationService().scheduleTaskReminder(task);
+    }
     await loadTasks();
   }
 
   Future<void> deleteTask(String id) async {
     await DbHelper.instance.deleteTask(id);
+    await NotificationService().cancelTaskReminder(id);
     await loadTasks();
     ref.read(coursesProvider.notifier).loadCourses();
   }
@@ -59,6 +76,11 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
         updatedAt: DateTime.now(),
       );
       await DbHelper.instance.updateTask(updated);
+      if (status == TaskStatus.completed) {
+        await NotificationService().cancelTaskReminder(taskId);
+      } else if (updated.deadline != null) {
+        await NotificationService().scheduleTaskReminder(updated);
+      }
       await loadTasks();
     }
   }
@@ -75,7 +97,6 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
         return sub;
       }).toList();
 
-      // Check if all subtasks completed -> mark task completed
       final allCompleted = updatedSubtasks.isNotEmpty && updatedSubtasks.every((s) => s.isCompleted);
       TaskStatus newStatus = task.status;
       if (allCompleted && task.status != TaskStatus.completed) {
@@ -93,6 +114,9 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
       final subtaskToUpdate = updatedSubtasks.firstWhere((s) => s.id == subtaskId);
       await DbHelper.instance.updateSubtask(subtaskToUpdate);
       await DbHelper.instance.updateTask(updatedTask);
+      if (newStatus == TaskStatus.completed) {
+        await NotificationService().cancelTaskReminder(taskId);
+      }
       await loadTasks();
     }
   }
@@ -114,6 +138,7 @@ class TaskNotifier extends StateNotifier<AsyncValue<List<TaskItem>>> {
   }
 
   Future<void> resetAllData() async {
+    await NotificationService().cancelAllNotifications();
     await DbHelper.instance.resetDatabase();
     await loadTasks();
     ref.read(coursesProvider.notifier).loadCourses();
@@ -132,12 +157,10 @@ final filteredTasksProvider = Provider<List<TaskItem>>((ref) {
     data: (tasks) {
       var result = tasks.toList();
 
-      // Course filter
       if (courseFilterId != null && courseFilterId.isNotEmpty) {
         result = result.where((t) => t.courseId == courseFilterId).toList();
       }
 
-      // Search filter
       if (searchQuery.isNotEmpty) {
         result = result.where((t) {
           final titleMatch = t.title.toLowerCase().contains(searchQuery);
@@ -147,7 +170,6 @@ final filteredTasksProvider = Provider<List<TaskItem>>((ref) {
         }).toList();
       }
 
-      // Status/Deadline Filter
       switch (filter) {
         case TaskFilter.today:
           result = result.where((t) {
@@ -178,7 +200,6 @@ final filteredTasksProvider = Provider<List<TaskItem>>((ref) {
           break;
       }
 
-      // Sorting
       result.sort((a, b) {
         switch (sortBy) {
           case TaskSortBy.priority:

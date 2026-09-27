@@ -42,29 +42,38 @@ class TaskCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Course Tag + Priority Badge
+                // Header Position: Course Name (Seamless without box) + Priority Signal
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (task.courseName != null && task.courseName!.isNotEmpty)
                       Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            task.courseName!,
-                            style: const TextStyle(
-                              color: AppColors.primaryLight,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.2,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                task.courseName!,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     const SizedBox(width: 8),
@@ -150,7 +159,7 @@ class TaskCard extends StatelessWidget {
                 const Divider(height: 1, color: AppColors.borderSubtle),
                 const SizedBox(height: 10),
 
-                // Footer: Deadline + Status Badge
+                // Footer Position: Deadline + Status (Seamless without box)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
